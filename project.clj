@@ -9,7 +9,9 @@
 				 [hiccup "1.0.5"]
 				 [me.raynes/cegdown "0.1.1"]
 				 [enlive "1.1.5"]
-				 [clygments "0.1.1"]]
+				 [clygments "0.1.1"]
+         [optimus "0.14.2"]]
 
   :ring {:handler imm.web/app}
-  :profiles {:dev {:plugins [[lein-ring "0.8.13"]]}})
+  :profiles {:dev {:plugins [[lein-ring "0.8.13"]]}}
+  :aliases {"static" ["run" "-m" "imm.web/export"]}) 
