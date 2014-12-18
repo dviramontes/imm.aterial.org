@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+
+<html><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Tech blog</title><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" /><link rel="stylesheet" href="/701c43c1e804/styles/main.css" /></head><body><div class="logo">imm.aterial</div><div class="body"><h1>My first post</h1><p>It's pretty short for now. Here's our project.clj:</p>
+<pre><code class="codehilite"><span class="p">(</span><span class="kd">defproject </span><span class="nv">cjohansen-no</span> <span class="s">"0.1.0-SNAPSHOT"</span>
+  <span class="ss">:description</span> <span class="s">"cjohansen.no source code"</span>
+  <span class="ss">:url</span> <span class="s">"http://cjohansen.no"</span>
+  <span class="ss">:license</span> <span class="p">{</span><span class="ss">:name</span> <span class="s">"BSD 2 Clause"</span>
+            <span class="ss">:url</span> <span class="s">"http://opensource.org/licenses/BSD-2-Clause"</span><span class="p">}</span>
+  <span class="ss">:dependencies</span> <span class="p">[[</span><span class="nv">org.clojure/clojure</span> <span class="s">"1.5.1"</span><span class="p">]</span>
+                 <span class="p">[</span><span class="nv">stasis</span> <span class="s">"1.0.0"</span><span class="p">]</span>
+                 <span class="p">[</span><span class="nv">ring</span> <span class="s">"1.2.1"</span><span class="p">]</span>
+                 <span class="p">[</span><span class="nv">hiccup</span> <span class="s">"1.0.5"</span><span class="p">]</span>
+                 <span class="p">[</span><span class="nv">me.raynes/cegdown</span> <span class="s">"0.1.1"</span><span class="p">]]</span>
+  <span class="ss">:ring</span> <span class="p">{</span><span class="ss">:handler</span> <span class="nv">cjohansen-no.web/app</span><span class="p">}</span>
+  <span class="ss">:profiles</span> <span class="p">{</span><span class="ss">:dev</span> <span class="p">{</span><span class="ss">:plugins</span> <span class="p">[[</span><span class="nv">lein-ring</span> <span class="s">"0.8.10"</span><span class="p">]]}})</span>
+</code></pre><p>/.....</p></div></body></html>
