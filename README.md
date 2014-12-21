@@ -1,15 +1,7 @@
-# imm.aterial
 
-run server 
-lein ring server
+# A [stasis]([https://github.com/magnars/stasis]) static file repo for imm.aterial.org
 
-## Usage
+## run server 
 
-FIXME
+`lein ring server`
 
-## License
-
-Copyright © 2014 FIXME
-
-Distributed under the Eclipse Public License either version 1.0 or (at
-your option) any later version.
