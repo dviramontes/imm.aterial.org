@@ -12,19 +12,25 @@
             [me.raynes.cegdown :as md]
             [stasis.core :as stasis]))
 
+; (def articles
+;   (stasis/slurp-directory "resources/md/" #"\.md"))
+
+(println articles)
+
 (defn layout-page [request page]
   (html5
    [:head
     [:meta {:charset "utf-8"}]
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
-    [:title "Tech blog"]
+    [:title "imm"]
     [:link {:rel "stylesheet" :href "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"}]
-    ; [:link {:rel "stylesheet" :href "/styles/main.css"}]]
-	[:link {:rel "stylesheet" :href (link/file-path request "/styles/main.css")}]]    
+        [:link {:rel "stylesheet" :href (link/file-path request "/styles/main.css")}]]     
    [:body
-    [:div.logo "imm.aterial"]
-    [:div.body page]]))
+    [:div.logo [:a {:href "/"} "imm.aterial.org"]]
+    [:div.body [:div.container page]
+     [:div.nav
+      [:div.nav-bar [:ul (stasis/slurp-directory "resources/md" #"\.md$")]]]]]))
 
 (def pegdown-options ;; https://github.com/sirthias/pegdown
   [:autolinks :fenced-code-blocks :strikethrough])
@@ -38,6 +44,7 @@
                (vals pages))))
 
 (defn prepare-page [page req]
+  (println (req :uri))
   (-> (if (string? page) page (page req))
       highlight-code-blocks))
 

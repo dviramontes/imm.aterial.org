@@ -1,13 +1,15 @@
 @import url(zenburn.css);
 
 body {
-	background: gray;
+	background: RGB(238, 238, 238);
 	color: white;
-    font: 16px Helvetica, arial, freesans, clean, sans-serif;
-    line-height: 1.5;
-    margin: 0 20px;
+	font: 16px Helvetica, arial, freesans, clean, sans-serif;
+	line-height: 1.5;
+	margin: 0 20px;
 }
-
+h1, p{
+	color: RGB(63, 63, 63);
+}
 pre{
 	background:RGB(63, 63, 63);
 }
