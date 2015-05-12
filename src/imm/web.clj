@@ -12,10 +12,8 @@
             [me.raynes.cegdown :as md]
             [stasis.core :as stasis]))
 
-; (def articles
-;   (stasis/slurp-directory "resources/md/" #"\.md"))
-
-(println articles)
+(def articles
+  (stasis/slurp-directory "resources/md/" #"\.md"))
 
 (defn layout-page [request page]
   (html5

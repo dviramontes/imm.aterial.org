@@ -1,0 +1,2 @@
+{:require  [screener.app]
+ :init-fns [screener.app/init]}
