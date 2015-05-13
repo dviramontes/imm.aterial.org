@@ -7,6 +7,9 @@
                  [pandeiro/boot-http    "0.6.1"      :scope "test"]
                  [reagent "0.5.0"]
                  [reagent-forms "0.5.1"]
+                 [cljsjs/moment "2.9.0-0"]
+                 ;; [cljsjs/jquery "1.9.1-0"]
+                 ;; [cljsjs/jquery-daterange-picker "0.0.5-2"]
                  [deraen/boot-less "0.2.1" :scope "test"]])
 
 (require
