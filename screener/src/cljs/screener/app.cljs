@@ -141,6 +141,11 @@
      :text :thirteen]
 
     [:br]
+    ;; <button type="submit" class="btn btn-default">Submit</button>
+    [:button.btn.btn-default.btn-lg {:type "submit" :style 
+                                     {:background-color "#FF306D"
+                                      :color "white"
+                                      }} "submit"]
     ]])
 
 (defn init []
