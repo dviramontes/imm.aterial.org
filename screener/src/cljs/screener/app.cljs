@@ -1,26 +1,35 @@
 (ns screener.app
   (:require [reagent.core :as reagent :refer [atom]]
             [reagent-forms.core :refer [bind-fields]]
-            ;;[cljsjs/jquery :as jQuery]
             [cljsjs.moment :as moment]
             ;;[cljsjs.jquery-daterange-picker :as jquery-date-picker]
             ))
 
 (enable-console-print!)
 
-(defn datepicker [title id]
-   [:div.row
+; (defn datepicker [title id]
+;    [:div.row
+;     [:div.col-lg-12
+;      [:h3 title]
+;      [:div [:input {:field :datepicker
+;             :id id
+;             :date-format "yyyy/mm/dd"
+;             :inline true}]]]])
+
+  ;;[:input#set-date {:type "text" :placeholder  "mm/dd/yyyy" :size 11 :value today}]
+
+(defn date-picker [title subtext id]
+
+  (let [today (.format (js/moment (new js/Date)) "MM/DD/YYYY")]
+           [:div.row  
     [:div.col-lg-12
      [:h3 title]
-     [:div [:input {:field :datepicker
+     [:div [:label subtext
+              [:input {:field :datepicker
             :id id
             :date-format "yyyy/mm/dd"
-            :inline true}]]]])
-
-(defn date-picker []
-  (let [today (.format (js/moment (new js/Date)) "MM/DD/YYYY")]
-    (fn [] [:input#set-date {:type "text" :placeholder  "mm/dd/yyyy" :size 11 :value today}])))
-
+            :inline true}]]]]]))
+            
 (defn number [title subtext id]
   [:div.row
    [:div.col-lg-12
@@ -36,7 +45,6 @@
      [:input.form-control {:field :text :id id}]]]])
 
 (defn radio [title subtext id values]
-  (print )
   [:div.row
    [:div.col-lg-12
     [:h3 title]
@@ -44,16 +52,16 @@
      (for [opt (seq values)]
        [:button.btn.btn-default {:key opt :type "button"} (name opt)])]]])
 
-(defn lista [title subtext id & options]
+(defn lista [title subtext id options]
+  (print options)
   [:div.row
    [:div.col-lg-12
     [:h3 title]
     [:div.form-group
      [:label subtext]
      [:select.form-control {:field :list :id :many.options}
-      [:option {:key :foo} "foo"]
-      [:option {:key :bar} "bar"]
-      [:option {:key :baz} "baz"]]]]])
+      (for [opt options]
+            [:option {:key opt} (name opt)])]]]])
 
 (defn question [title subtext type id & options]
   (case type
@@ -61,7 +69,8 @@
     :list  (lista title subtext id options)
     :text  (text  title subtext id)
     :numeric (number title subtext id)
-    :datepicker (datepicker title id)))
+    ;;:datepicker (datepicker title id)
+    ))
 
 (defn parent-component []
   [:div.container 
@@ -73,26 +82,26 @@
 
    [:form.form
 
-    [date-picker]
+    ;;[date-picker]
     
     [question 
      "Is this a re-design or a new project?" 
-     "subtext"
+     nil
      :radio :project-type :new-project :re-design]
 
     [question 
      "What are the goals for this project?" 
-     "subtext"
+     nil
      :text :two]
 
     [question 
      "Where do you see us adding the most value/complementing your existing team?"
-     "subtext"
+     nil
      :text :three]
 
     [question 
-     "Who will be working on this project from your end? Will any additional outside partners or agencies be involved and how?"
-     "subtext"
+     "Who will be working on this project from your end?"
+     "Will any additional outside partners or agencies be involved and how?"
      :text :four]
     
     [question 
@@ -101,33 +110,35 @@
      :text :five]
 
     [question 
-     "When does our work need to be finished? What is your target total completion date? What is driving that?"
-     "subtext"
-     :datepicker :six]
+     "When does our work need to be finished?"
+     "What is your target total completion date? What is driving that?"
+     :text :six]
 
-    [question 
-     "What is most important about this project?"
-     "subtext"
-     :text :seven]
+    ;; [question 
+    ;;  "What is most important about this project?"
+    ;;  nil
+    ;;  :text :seven]
 
     [question
-     "Please rate the following:"
-     "subtext"
-     :list :eight]
+     "How did you hear about us ?"
+     nil
+     :list 
+     :eight 
+     :referral :online :other]
     
     [question
-     "Who is/are your audience/your target users/your customers?"
-     "subtext"
+     "Who (is, are) your (audience, your target users, your customers)?"
+     nil
      :text :nine]
 
     [question
-     "What does success look like? How will you know this project has succeeded?"
-     "subtext"
+     "What does success look like?"
+     "How will you know this project has succeeded?"
      :text :ten]
 
     [question
-     "What are you worried about? What do you imagine going wrong?"
-     "Don't worry, you are in good company"
+     "What are you worried about?"
+     "What do you imagine going wrong? Don't worry, you are in good company"
      :text :eleven]
 
     [question
@@ -136,16 +147,18 @@
      :numeric :twelve]
 
     [question
-     "What does the selection process look like on your end? How many people are you talking to and when do you expect to be making a decision?"
-     "subtext"
+     "What does the selection process look like on your end?"
+     "How many people are you talking to and when do you expect to be making a decision?"
      :text :thirteen]
 
     [:br]
-    ;; <button type="submit" class="btn btn-default">Submit</button>
-    [:button.btn.btn-default.btn-lg {:type "submit" :style 
-                                     {:background-color "#FF306D"
+  
+    [:p.text-center [:button.btn.btn-default.btn-lg {:type "submit" :style 
+                                     {:padding "1em 3em 1em 3em"
+                                      :margin "2em auto"
+                                      :background-color "#FF306D"
                                       :color "white"
-                                      }} "submit"]
+                                      }} "Get in Touch"]]
     ]])
 
 (defn init []
