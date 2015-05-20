@@ -6,6 +6,7 @@
 @secondary-color: RGB(147, 255, 225);
 @rojiso: #FF306D;
 @purpura: #2D2D42; // valhalla
+@pistacho: lighten(@secondary-color,10%);
 
 body {
   font: 100% @font-stack;
@@ -27,5 +28,14 @@ form {
 
 #many.options{
      width: 80%;
-}   
+}
 
+hr{
+  margin-top: inherit;
+  border-color: gray;
+}
+
+#btn-login{
+  background-color: @pistacho;
+  color: @purpura;
+}

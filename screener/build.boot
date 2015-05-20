@@ -8,6 +8,7 @@
                  [reagent "0.5.0"]
                  [reagent-forms "0.5.1"]
                  [cljsjs/moment "2.9.0-0"]
+                 [cljs-ajax "0.3.11"]
                  ;; [cljsjs/jquery "1.9.1-0"]
                  ;; [cljsjs/jquery-daterange-picker "0.0.5-2"]
                  [deraen/boot-less "0.2.1" :scope "test"]])
@@ -21,9 +22,7 @@
 
 (deftask build []
   (comp (speak)
-        
         (cljs)
-        
         (less)
         (sift   :move {#"less.css" "css/less.css" #"less.main.css.map" "css/less.main.css.map"})))
 
