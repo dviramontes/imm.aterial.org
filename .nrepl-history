@@ -1,0 +1,17 @@
+(when nil (print "yes") (print "no"))
+(def x)
+x
+(def x nil)
+(if-not (nil? x) (print x))
+(doc if-not)
+'[1]
+[1]
+''[1]
+''['1]
+(doc slurp)
+(:test :test2)
+(class (:test :test2))
+(class? (:test :test2))
+(type (:test :test2))
+(doc type)
+(type 3)
