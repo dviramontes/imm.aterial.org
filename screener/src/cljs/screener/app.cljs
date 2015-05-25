@@ -10,20 +10,7 @@
 
 (defn serialize [j] (.parse js/JSON j))
 
-(defn handler [res]
-  (print (str res)))
-
-(defn error-handler [{:keys [status status-text]}]
-  (print (str "oops: " status " " status-text)))
-
-(defn submit-fn [e]
-  (POST "http://localhost:4000/email-form"
-       {:handler handler
-        :params {:data "kdmaslkmdals"}
-        :error-handler error-handler})
-  (print "clicked"))
-
-(defn date-picker [title subtext id]
+#_(defn date-picker [title subtext id]
   (let [today (.format (js/moment (new js/Date)) "MM/DD/YYYY")]
     [:div.row
     [:div.col-lg-12
@@ -41,7 +28,7 @@
     [:label [:em.help-block subtext]
      [:input.form-control {:field :numeric :id id :placeholder opts}]]]])
 
-(defn text [title subtext id opts]
+(defn text [title subtext id & opts]
   [:div.row
    [:div.col-lg-8
     [:h3 title]
@@ -53,128 +40,121 @@
    [:div.col-lg-12
     [:h3 title]
     [:label [:em.help-block.help-block subtext]
-     [:input.form-control {:field :email :id id :placeholder "me@mail.com"}]]]])
+     [:input.form-control {:field :email  :type "email" :id id :placeholder "me@mail.com" :required true}]]]])
 
-(defn selection-box [title subtext id values]
-  ;; (print values)
+(defn selection-box [title id values]
   [:div.row
    [:div.col-lg-12
     [:h3 title]
-    [:div.btn-group {:field :single-select id :unique.position}
+    [:div.btn-group {:field :single-select :id id}
      (for [opt values]
        [:button.btn.btn-default {:key opt :type "button"} (name opt)])]]])
 
-(defn lista [title subtext id options]
+(defn lista [title subtext id & options]
   [:div.row
    [:div.col-lg-4.col-md-4
     [:h3 title]
     [:div.form-group
      [:label subtext]
-     [:select.form-control {:field :list :id :many.options}
+     [:select.form-control {:field :list :id id}
       (for [opt options]
         [:option {:key opt} (name opt)])]]]])
-
-(defn question [title subtext type id & options]
-  (case type
-    :selection-box (selection-box title subtext id options)
-    :list  (lista title subtext id options)
-    :text  (text  title subtext id options)
-    :numeric (number title subtext id options)
-    :email   (email title subtext id)
-    ;;:datepicker (datepicker title id)
-    ))
 
 (def form
   [:form.form
 
     ;;[date-picker]
 
-    ; (question
-    ;  "Is this a re-design or a new project?"
-    ;  nil
-    ;  :selection-box
-    ;  :project-type :new-project
-    ;  :re-design)
+     ;(selection-box
+     ; "Is this a re-design or a new project?"
+     ; :project-type
+     ; [ :new-project :re-design])
 
-    (question
+    (text
      "What are the goals for this project?"
      nil
-     :text :two)
+     :two)
 
-    (question
+    (text
      "Where do you see us adding the most value/complementing your existing team?"
      nil
-     :text :three)
+     :three)
 
-    (question
+    (text
      "Who will be working on this project from your end?"
      "Will any additional outside partners or agencies be involved and how?"
-     :text :four)
+     :four)
 
-    (question
+    (text
      "What is motivating you or enabling you to do this project now?"
      nil
-     :text :five)
+     :five)
 
-    (question
+    (text
      "When does our work need to be finished?"
      "What is your target total completion date? What is driving that?"
-     :text :six "Q1, Q3, 2015, 2016")
+     :six
+     "Q1, Q3, 2015, 2016")
 
     ; (question
     ;  "What is most important about this project?"
     ;  nil
     ;  :text :seven)
 
-    (question
+    (lista
      "How did you hear about us ?"
      nil
-     :list
      :eight
      :referral :online :other)
 
-    (question
+    (text
      "Who (is, are) your (audience, your target users, your customers)?"
      nil
-     :text :nine)
+     :nine)
 
-    (question
+    (text
      "What does success look like?"
      "How will you know this project has succeeded?"
-     :text :ten)
+     :ten)
 
-    (question
+    (text
      "What are you worried about?"
      "What do you imagine going wrong? Don't worry, you are in good company"
-     :text :eleven)
+     :eleven)
 
-    (question
+    (number
      "What is your budget range?"
      "ballpark figure is fine"
-     :numeric :twelve "$")
+     :twelve "$")
 
-    (question
+    (text
      "What does the selection process look like on your end?"
      "How many people are you talking to and when do you expect
      to be making a decision?"
-     :text :thirteen)
+     :thirteen)
 
-    (question "Lastly, how do we get in touch with you?" nil :email :email)
-
-    [:br]
-
-    [:p.text-center [:button.btn.btn-default.btn-lg
-                     {:type "button"
-                      :on-click submit-fn
-                      :style
-                      {:padding "1em 3em 1em 3em"
-                       :margin "2em auto"
-                       :background-color "#FF306D"
-                       :color "white"
-                       }} "Get in Touch"]]])
+    (email
+      "Lastly, how do we get in touch with you?"
+      nil
+      :email)
+   ])
 
 (defn parent-component []
-  (let [doc (atom {})]
+  (let [doc (atom {})
+
+        success-handler (fn [res]
+          (print (str res)))
+
+        error-handler (fn [{:keys [status status-text]}]
+          (print (str "oops: " status " " status-text)))
+
+        submit-fn (fn []
+          (POST "http://localhost:4000/email-form"
+                {:handler success-handler
+                 :params {:data @doc}
+                 :error-handler error-handler})
+          (print "clicked"))]
+
     [:div.container
      [:div.row
       [:div.col-lg-12
@@ -185,7 +165,19 @@
       [:div.col-lg-6.col-md-12.col-sm.12
        [:div.container
         ;;{:keys [email] :as doc}
-        [bind-fields form doc (fn [id value doc] (print doc))]]]]]))
+        [bind-fields form doc (fn [id value _doc]
+                                (reset! doc _doc)
+                                (print (str id "::" value))
+                                #_(swap! assoc id doc))]
+        [:p.text-center [:button.btn.btn-default.btn-lg
+                         {:type "button"
+                          :on-click submit-fn
+                          :style
+                          {:padding "1em 3em 1em 3em"
+                           :margin "2em auto"
+                           :background-color "#FF306D"
+                           :color "white"
+                           }} "Get in Touch"]]]]]]))
 
 (defn init []
   (r/render-component [parent-component]
