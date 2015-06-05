@@ -1,11 +1,15 @@
-### aws lambda pricing:
+DEV:
 
-First 1 million requests per month are free
-$0.20 per 1 million requests thereafter ($0.0000002 per request)
+cljs screener:
+$ boot dev
 
-to do:
-[ ] - configure auth permissions for aws lambda fn exec
-[x] - write code to take form input data and send email
+mailer service:
+$ lein ring server-headless 4000
+
+TODO:
+[/] - configure auth permissions for aws-lambda fn exec
+[/] - write code to take form input data and send email
 [ ] - test code on heroku
 [ ] - deploy dokku on digital ocean and configure ssh
 [ ] - write code to collect data from input fields, ~ r/atom
+[ ] - add sent-confirmation modal

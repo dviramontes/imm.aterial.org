@@ -2,6 +2,8 @@
   (:require [reagent.core :as r :refer [atom]]
             [reagent-forms.core :refer [bind-fields]]
             [cljsjs.moment :as moment]
+            ;; [cljsjs.jquery :as $]
+            ;; [json-html.core :refer [edn->hiccup]]
             [ajax.core :refer [POST]]))
 
 (enable-console-print!)
@@ -10,16 +12,13 @@
 
 (defn serialize [j] (.parse js/JSON j))
 
-#_(defn date-picker [title subtext id]
+(defn date-picker [title subtext id]
   (let [today (.format (js/moment (new js/Date)) "MM/DD/YYYY")]
     [:div.row
     [:div.col-lg-12
      [:h3 title]
      [:div [:label subtext
-              [:input {:field :datepicker
-            :id id
-            :date-format "yyyy/mm/dd"
-            :inline true}]]]]]))
+            [:input {:field :datepicker :id id :date-format "yyyy/mm/dd" :inline true}]]]]]))
 
 (defn number [title subtext id opts]
   [:div.row
@@ -35,20 +34,21 @@
     [:label [:em.help-block subtext]]
     [:textarea.form-control {:rows 3 :field :text :id id :placeholder opts}]]])
 
-(defn email [title subtext id]
+(defn email [title subtext id & options]
   [:div.row
    [:div.col-lg-12
     [:h3 title]
     [:label [:em.help-block.help-block subtext]
      [:input.form-control {:field :email  :type "email" :id id :placeholder "me@mail.com" :required true}]]]])
 
-(defn selection-box [title id values]
+(defn selection-box [title subtext id & values]
   [:div.row
    [:div.col-lg-12
     [:h3 title]
+    (print values)
     [:div.btn-group {:field :single-select :id id}
      (for [opt values]
-       [:button.btn.btn-default {:key opt :type "button"} (name opt)])]]])
+          ^{:key opt} [:button.btn.btn-default {:key opt :type "button"} "test"])]]])
 
 (defn lista [title subtext id & options]
   [:div.row
@@ -63,86 +63,108 @@
 (def form
   [:form.form
 
-    ;;[date-picker]
+    ;; [date-picker "hi" nil :someday]
 
-     ;(selection-box
-     ; "Is this a re-design or a new project?"
-     ; :project-type
-     ; [ :new-project :re-design])
+    ;(selection-box
+    ;"Is this a re-design or a new project?"
+    ;nil
+    ;:project-type
+    ;:new-project :re-design)
 
     (text
      "What are the goals for this project?"
      nil
-     :two)
+     :goals)
 
     (text
      "Where do you see us adding the most value/complementing your existing team?"
      nil
-     :three)
+     :value)
 
     (text
      "Who will be working on this project from your end?"
      "Will any additional outside partners or agencies be involved and how?"
-     :four)
+     :collaborators)
 
     (text
      "What is motivating you or enabling you to do this project now?"
      nil
-     :five)
+     :motive)
 
     (text
      "When does our work need to be finished?"
      "What is your target total completion date? What is driving that?"
-     :six
+     :deadline
      "Q1, Q3, 2015, 2016")
 
-    ; (question
+    ; (text
     ;  "What is most important about this project?"
     ;  nil
-    ;  :text :seven)
+    ;  :text :imperative)
 
     (lista
      "How did you hear about us ?"
      nil
-     :eight
+     :referal
      :referral :online :other)
 
     (text
      "Who (is, are) your (audience, your target users, your customers)?"
      nil
-     :nine)
+     :audience)
 
     (text
      "What does success look like?"
      "How will you know this project has succeeded?"
-     :ten)
+     :success)
 
     (text
      "What are you worried about?"
-     "What do you imagine going wrong? Don't worry, you are in good company"
-     :eleven)
+     "What do you imagine going wrong? Don't worry, you are in good company."
+     :worries-concerns)
 
     (number
      "What is your budget range?"
      "ballpark figure is fine"
-     :twelve "$")
+     :budget
+     "$")
 
     (text
      "What does the selection process look like on your end?"
      "How many people are you talking to and when do you expect
      to be making a decision?"
-     :thirteen)
+     :selection-process)
 
     (email
       "Lastly, how do we get in touch with you?"
       nil
-      :email)
-   ])
+      :email)])
+
+;(defn editor [doc & body]
+;  [:div.row
+;   body
+;   [:div.col-md-7
+;    [:h2 "Document State"]
+;    [edn->hiccup doc]]])
+;; <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+;; <h4 class="modal-title" id="mySmallModalLabel">Small modal<a class="anchorjs-link" href="#mySmallModalLabel"><span class="anchorjs-icon"></span></a></h4>
+
+(defn modal []
+  [:div.modal.fade.sent-email-modal
+   {:tab-index "-1" :role "dialog" :aria-labelledby "dialog" :aria-hidden "true"}
+   [:div.modal-dialog.modal-sm
+    [:div.modal-content
+     [:div.modal-header
+      [:button.close {:type "button" :data-dismiss "modal" :aria-label "Close"}
+       [:span {:aria-hidden true} "x"]]
+      [:h4.modal-title "Thank you, we'll be in touch shortly."]]
+     ]]])
 
 (defn parent-component []
   (let [doc (atom {})
 
         success-handler (fn [res]
+
           (print (str res)))
 
         error-handler (fn [{:keys [status status-text]}]
@@ -156,6 +178,7 @@
           (print "clicked"))]
 
     [:div.container
+     (modal)
      [:div.row
       [:div.col-lg-12
        [:br]
@@ -164,20 +187,21 @@
         "Tell us about your project"]]
       [:div.col-lg-6.col-md-12.col-sm.12
        [:div.container
-        ;;{:keys [email] :as doc}
         [bind-fields form doc (fn [id value _doc]
                                 (reset! doc _doc)
                                 (print (str id "::" value))
                                 #_(swap! assoc id doc))]
         [:p.text-center [:button.btn.btn-default.btn-lg
                          {:type "button"
+                          :data-toggle "modal"
+                          :data-target ".sent-email-modal"
                           :on-click submit-fn
                           :style
                           {:padding "1em 3em 1em 3em"
                            :margin "2em auto"
                            :background-color "#FF306D"
-                           :color "white"
-                           }} "Get in Touch"]]]]]]))
+                           :color "white"}} "Get in Touch"]]]]]]))
+
 
 (defn init []
   (r/render-component [parent-component]

@@ -15,3 +15,10 @@ x
 (type (:test :test2))
 (doc type)
 (type 3)
+(class [])
+(class [:tes :tes])
+(def x [:test :test](
+(def x [:test :test])
+(for [x y] (println x))
+(def x [:test :test])
+(for [x y] (println y))
